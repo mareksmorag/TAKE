@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+</head>
+<body>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#calc").click(function () {
+            var x = $("#x").val();
+            var y = $("#y").val();
+            $.ajax({
+                type: "GET",
+                data: {"x": x, "y":y},
+                url: "/api/math",
+                success: function (json){
+                    $("#sum").text(json.sum)
+                    $("#difference").text(json.difference)
+                    $("#product").text(json.product)
+                    $("#quotient").text(json.quotient)
+                }
+            });
+        });
+    });
+</script>
+<div>
+    <h1>Calculations</h1>
+    <form>
+        x = <input type="text" id="x" />
+        y = <input type="text" id="y" />
+        <input type="button" id="calc" value="Call API(jQuery)" />
+        <input type="button" id="calc2" value="Calculate API(vanilla JS)" />
+    </form>
+    x + y = <span id="sum"></span><br />
+    x - y = <span id="difference"></span><br />
+    x * y = <span id="product"></span><br />
+    x / y = <span id="quotient"></span><br />
+</div>
+
+</body>
+<script type="text/javascript">
+    document.getElementById("calc2").addEventListener("click", function (){
+        var x = document.getElementById("x").value
+        var y = document.getElementById("y").value
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                res = JSON.parse(xhr.responseText);
+                document.getElementById("sum").textContent = res.sum
+                document.getElementById("difference").textContent = res.difference
+                document.getElementById("product").textContent = res.product
+                document.getElementById("quotient").textContent = res.quotient
+            }
+        }
+        xhr.open('GET', "/api/math/?x="+x+"&y="+y, true);
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.send(null);
+
+    })
+</script>
+</html>
